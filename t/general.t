@@ -3,7 +3,7 @@ use strict;
 use Test::More qw(no_plan);
 
 BEGIN {
-	use_ok('OD::Prometheus::Client');
+	use_ok('OmniDisco::Prometheus');
 }
 
 
