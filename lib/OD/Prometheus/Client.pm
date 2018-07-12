@@ -1,12 +1,21 @@
-package PrometheusClient;
-
-use v5.22;
 use strict;
 use warnings;
+
+package OD::Prometheus::Client;
+
+use v5.24;
 use Moose;
 use LWP::UserAgent;
 use Data::Printer;
-use PrometheusMetric;
+use OD::Prometheus::Metric;
+
+=head1 NAME
+
+OD::Prometheus::Client - Client library to talk to Prometheus nodes
+
+=cut
+
+
 
 has host => (
 	is		=> 'ro',
@@ -82,7 +91,7 @@ sub get {
 				next
 			}
 			else {
-				push @ret,PrometheusMetric->new( line => $line, comments => \@comments );
+				push @ret,OD::Prometheus::Metric->new( line => $line, comments => \@comments );
 				@comments = ();
 			}
 		}

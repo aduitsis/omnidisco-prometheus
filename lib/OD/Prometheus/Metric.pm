@@ -1,12 +1,19 @@
-package PrometheusMetric;
-
-use v5.24;
 use strict;
 use warnings;
 
+package OD::Prometheus::Metric;
+
+use v5.24;
 use Moose;
 use Data::Printer;
 use Regexp::Common qw(number delimited);
+
+=head1 NAME
+
+OD::Prometheus::Metric - Class representing a Prometheus metric
+
+=cut
+
 
 has metric_name	=> (
 	is	=> 'ro',
