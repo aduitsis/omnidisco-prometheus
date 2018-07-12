@@ -22,3 +22,6 @@ say STDERR $b->labels->{ quote };
 
 say STDERR $b->to_string;
 
+
+# my $c = OD::Prometheus::Client->new(host=>'test.server',port=>9100);
+# ok( ref $c->get  eq 'ARRAY', 'get returns an array' );
