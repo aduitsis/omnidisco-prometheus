@@ -162,7 +162,7 @@ sub parse {
 		if( exists $+{ labels } ) {
 			my @labelstrs = split(/\s*,\s*/,$+{ labels });
 			for my $labelstr ( @labelstrs ) {
-				say $labelstr;
+				#### say $labelstr;
 				if( $labelstr =~ /
 						^
 						(?<label_name>[a-zA-Z_][a-zA-Z0-9_]*) #capture $1
