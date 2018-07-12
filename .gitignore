@@ -1,0 +1,7 @@
+.DS_Store
+/IPv6-Address-*
+/.build
+!META.json
+*~
+*.swp
+*.swo
