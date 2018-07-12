@@ -5,3 +5,5 @@
 *~
 *.swp
 *.swo
+*.tar.gz
+OmniDisco-Prometheus-*/
