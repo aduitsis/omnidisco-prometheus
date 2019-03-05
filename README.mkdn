@@ -4,7 +4,7 @@ OmniDisco::Prometheus - Client library to talk to Prometheus nodes
 
 # VERSION
 
-version 0.003
+version 0.004
 
 # COPYRIGHT & LICENSE
 
