@@ -8,6 +8,7 @@ use Moose;
 use LWP::UserAgent;
 use Data::Printer;
 use OD::Prometheus::Metric;
+use OD::Prometheus::Set;
 
 =head1 NAME
 
@@ -81,7 +82,7 @@ sub get {
 	my $self = shift // die 'incorrect call';
 	my $res = $self->ua->request($self->request);
 	if ($res->is_success) {
-		my @ret = ();
+		my $ret = OD::Prometheus::Set->new;
 		my @comments = ();
 		for my $line ( split("\n",$res->decoded_content) ) {
 			if( $line =~ /^#/ ){
@@ -91,11 +92,11 @@ sub get {
 				next
 			}
 			else {
-				push @ret,OD::Prometheus::Metric->new( line => $line, comments => \@comments );
+				$ret->push( OD::Prometheus::Metric->new( line => $line, comments => \@comments ) );
 				@comments = ();
 			}
 		}
-		return \@ret
+		return $ret
 	}
 	else {
 		die $res->status_line
