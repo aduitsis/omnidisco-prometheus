@@ -59,6 +59,13 @@ ok( !$rs7->is_empty, 'find test 7' );
 
 ok( $rs0->value == 7.1, 'Set value method');
 
+my $count;
+$rs0->each( sub {
+	isa_ok( $_, 'OD::Prometheus::Metric' );
+	$count++
+});
+ok( $count == 1, 'Each method seems to be working okay' );
+
 done_testing;
 
 # my $c = OD::Prometheus::Client->new(host=>'test.server',port=>9100);

@@ -7,7 +7,7 @@ use v5.24;
 use Moose;
 use LWP::UserAgent;
 use Data::Printer;
-use Scalar::Util qw(looks_like_number);
+use Scalar::Util qw(looks_like_number reftype);
 use OD::Prometheus::Metric;
 
 =head1 NAME
@@ -81,6 +81,15 @@ sub find {
 	}
 	return $rs
 }
+
+sub each {
+	my $self	= shift // die 'incorrect call';
+	my $func	= shift // die 'incorrect call';
+	die '2nd argument must be a subroutine reference' unless reftype( $func ) eq 'CODE';
+	for ( $self->metrics->@* ) {
+		$func->()
+	}
+}	
 
 sub value {
 	die 'Please do not call value on a Set that does not have exactly 1 item' unless $_[0]->size == 1;
