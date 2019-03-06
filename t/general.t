@@ -57,6 +57,8 @@ ok( $rs6->is_empty, 'find test 6' );
 my $rs7 = $s->find( 'http_request_duration_microseconds', { plain => 'prometheus' }, 7.1 );
 ok( !$rs7->is_empty, 'find test 7' );
 
+ok( $rs0->value == 7.1, 'Set value method');
+
 done_testing;
 
 # my $c = OD::Prometheus::Client->new(host=>'test.server',port=>9100);

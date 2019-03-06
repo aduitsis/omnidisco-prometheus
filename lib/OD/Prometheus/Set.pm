@@ -82,6 +82,10 @@ sub find {
 	return $rs
 }
 
+sub value {
+	die 'Please do not call value on a Set that does not have exactly 1 item' unless $_[0]->size == 1;
+	$_[0]->item(0)->value
+}
 
 
 1;
