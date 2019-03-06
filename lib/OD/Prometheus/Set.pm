@@ -47,6 +47,10 @@ sub item {
 	$_[0]->metrics->[ $_[1] ]
 }
 
+sub to_string {
+	join("\n",map { $_->to_string } $_[0]->metrics->@*)
+}
+
 sub find {
 	my $self	= shift // die 'incorrect call';
 	my $metric	= shift // die 'incorrect call';
