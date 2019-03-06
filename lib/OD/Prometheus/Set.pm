@@ -39,6 +39,18 @@ sub is_empty {
 	$_[0]->size == 0
 }
 
+sub pop {
+	pop $_[0]->metrics->@*
+}
+
+sub unshift {
+	unshift $_[0]->metrics->@*
+}
+
+sub item {
+	$_[0]->metrics->[ $_[1] ]
+}
+
 sub find {
 	my $self	= shift // die 'incorrect call';
 	my $metric	= shift // die 'incorrect call';
@@ -69,6 +81,7 @@ sub find {
 	}
 	return $rs
 }
+
 
 
 1;
