@@ -43,8 +43,8 @@ sub pop {
 	pop $_[0]->metrics->@*
 }
 
-sub unshift {
-	unshift $_[0]->metrics->@*
+sub shift {
+	shift $_[0]->metrics->@*
 }
 
 sub item {
