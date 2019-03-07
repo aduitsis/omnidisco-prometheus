@@ -11,6 +11,7 @@ OmniDisco::Prometheus - Client library to talk to Prometheus nodes
 
 use OD::Prometheus::Metric;
 use OD::Prometheus::Client;
+use OD::Prometheus::Query;
 
 =head1 COPYRIGHT & LICENSE
  

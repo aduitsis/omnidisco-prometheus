@@ -7,6 +7,7 @@ use v5.24;
 use Moose;
 use Data::Printer;
 use Regexp::Common qw(number delimited);
+use Scalar::Util qw(reftype);
 
 =head1 NAME
 
@@ -23,13 +24,13 @@ has metric_name	=> (
 
 has value	=> (
 	is	=> 'ro',
-	isa	=> 'Str',
+	isa	=> 'Value | ArrayRef[ArrayRef]',
 	required=> 1,
 );
 
 has timestamp	=> (
 	is	=> 'ro',
-	isa	=> 'Num',
+	isa	=> 'Int',
 	required=> 1,
 	default	=> sub { time },
 );
@@ -69,18 +70,19 @@ sub BUILDARGS {
 	}
 }
 
+sub is_multi {
+	defined( reftype( $_[0]->value ) );
+}
+
 sub to_string {
-	join("\n",
-		(
-		( defined( $_[0]->docstring )? '# HELP '.encode_str( $_[0]->docstring ) : () ),
-		'# TYPE '.$_[0]->type,
-		join(' ',
-			$_[0]->metric_name.( ($_[0]->labels->%*)? '{'.join(',',map { $_.'='.$_[0]->get_label( $_ ) } (sort keys $_[0]->labels->%*)).'}' : '' ),
-			$_[0]->value,
-			$_[0]->timestamp
-		)
-		)
-	)
+	(defined( $_[0]->docstring )? '# HELP '.encode_str( $_[0]->docstring )."\n" : '' ).'# TYPE '.$_[0]->type."\n".
+	join("\n", map { 
+			$_[0]->metric_name.
+			( ($_[0]->labels->%*)? '{'.join(',',map { $_.'='.$_[0]->get_label( $_ ) } (sort keys $_[0]->labels->%*)).'}' : '' ).' '.
+			$_->[1].' '.$_->[0]
+		}
+		sort { $a->[0] <=> $b->[0] } ( $_[0]->is_multi ? $_[0]->value->@* : [ $_[0]->timestamp, $_[0]->value ] )
+	) 
 }
 
 sub get_label {
