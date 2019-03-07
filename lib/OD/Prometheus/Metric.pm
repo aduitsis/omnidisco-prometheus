@@ -26,12 +26,14 @@ has value	=> (
 	is	=> 'ro',
 	isa	=> 'Value | ArrayRef[ArrayRef]',
 	required=> 1,
+	reader	=> '_value',
 );
 
 has timestamp	=> (
 	is	=> 'ro',
 	isa	=> 'Int',
 	required=> 1,
+	reader	=> '_timestamp',
 	default	=> sub { time },
 );
 
@@ -70,8 +72,26 @@ sub BUILDARGS {
 	}
 }
 
+sub value {
+	die 'Please do not call value when object contains multiple values. Use the is_multi method to test and call values if true'
+		if $_[0]->is_multi;
+	$_[0]->_value
+};
+
+sub values {
+	die 'Please do not call values when object contains one value. Use the is_multi method to test and call value if false'
+		if ! $_[0]->is_multi;
+	$_[0]->_value
+};
+
+sub timestamp {
+	die 'Please do not call timestamp when object contains multiple values. Use the is_multi method to test and, if true, get the timestamps from the values method directly'
+		if $_[0]->is_multi;
+	$_[0]->_timestamp
+}
+
 sub is_multi {
-	defined( reftype( $_[0]->value ) );
+	defined( reftype( $_[0]->_value ) );
 }
 
 sub to_string {
@@ -81,7 +101,7 @@ sub to_string {
 			( ($_[0]->labels->%*)? '{'.join(',',map { $_.'='.$_[0]->get_label( $_ ) } (sort keys $_[0]->labels->%*)).'}' : '' ).' '.
 			$_->[1].' '.$_->[0]
 		}
-		sort { $a->[0] <=> $b->[0] } ( $_[0]->is_multi ? $_[0]->value->@* : [ $_[0]->timestamp, $_[0]->value ] )
+		sort { $a->[0] <=> $b->[0] } ( $_[0]->is_multi ? $_[0]->values->@* : [ $_[0]->timestamp, $_[0]->value ] )
 	) 
 }
 
