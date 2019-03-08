@@ -8,6 +8,7 @@ use Moose;
 use LWP::UserAgent;
 use Data::Printer;
 use Scalar::Util qw(looks_like_number reftype);
+use List::Util qw( sum );
 use OD::Prometheus::Metric;
 
 =head1 NAME
@@ -32,7 +33,7 @@ sub push {
 }
 
 sub size {
-	scalar $_[0]->metrics->@*
+	sum map { $_->size } $_[0]->metrics->@*
 }
 
 sub is_empty {

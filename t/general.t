@@ -24,9 +24,12 @@ my $b2 = OD::Prometheus::Metric->new(
 );
 my $m = OD::Prometheus::Metric->new( metric_name=>'foo',labels=>{ bar => 'baz'},values=>[[1551972804,'xxx'],[1551972854,'yyy']] );
 my $m2 = OD::Prometheus::Metric->new( metric_name=>'foo',labels=>{ bar => 'baz'},value=>1234,timestamp=>1551972854 );
+my $all = OD::Prometheus::Set->new;
+$all->push( $m, $m2 );
 
 ok( $m->size == 2, 'Size method works');
 ok( $m2->size == 1, 'Size method works yet again');
+ok( $all->size == 3, 'Size also reflects correctly in Sets');
 is( $m->values, [[1551972804,'xxx'],[1551972854,'yyy']],'Values were set correctly');
 is( $m->ordered, [[1551972804,'xxx'],[1551972854,'yyy']],'Ordered values work correctly');
 is( $m->valuehash, { 1551972804=>'xxx',1551972854=>'yyy' } ,'valuehash method works');
