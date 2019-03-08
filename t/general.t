@@ -1,5 +1,6 @@
 use warnings;
 use strict;
+use Data::Printer;
 use Test2::V0 '!meta';
 
 use OmniDisco::Prometheus;
@@ -27,6 +28,12 @@ my $m2 = OD::Prometheus::Metric->new( metric_name=>'foo',labels=>{ bar => 'baz'}
 ok( $m->size == 2, 'Size method works');
 ok( $m2->size == 1, 'Size method works yet again');
 is( $m->values, [[1551972804,'xxx'],[1551972854,'yyy']],'Values were set correctly');
+is( $m->ordered, [[1551972804,'xxx'],[1551972854,'yyy']],'Ordered values work correctly');
+is( $m->valuehash, { 1551972804=>'xxx',1551972854=>'yyy' } ,'valuehash method works');
+is( $m->latest, 'yyy', 'latest method works');
+is( $m->latest_timestamp, 1551972854, 'latest_timestamp method works');
+is( $m->earliest, 'xxx', 'earliest method works');
+is( $m->earliest_timestamp, 1551972804, 'earliest_timestamp method works');
 is( $m2->value, 1234, 'Value also works');
 is( $b->value, 7.1, 'Value works yet again');
 is( $m2->timestamp, 1551972854, 'Timestamp works');

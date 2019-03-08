@@ -90,6 +90,39 @@ sub is_multi {
 	$_[0]->size > 1
 }
 
+sub valuehash {
+	my @a = map { $_->[0] => $_->[1] } $_[0]->values->@* ;
+	return { @a }
+}
+
+sub ordered {
+	[ sort { $a->[0] <=> $b->[0] } $_[0]->values->@* ]
+}
+
+sub latest_elem {
+	$_[0]->ordered->[-1]
+}
+
+sub latest {
+	$_[0]->latest_elem->[1]
+}
+
+sub latest_timestamp {
+	$_[0]->latest_elem->[0]
+}
+
+sub earliest_elem {
+	$_[0]->ordered->[0]
+}
+
+sub earliest {
+	$_[0]->earliest_elem->[1]
+}
+
+sub earliest_timestamp {
+	$_[0]->earliest_elem->[0]
+}
+
 sub to_string {
 	(defined( $_[0]->docstring )? '# HELP '.encode_str( $_[0]->docstring )."\n" : '' ).'# TYPE '.$_[0]->type."\n".
 	join("\n", map { 
