@@ -21,12 +21,19 @@ my $b2 = OD::Prometheus::Metric->new(
                 '# And when the entire mountain is chiseled away, the first second of eternity will have passed',
         ]
 );
+my $m = OD::Prometheus::Metric->new( metric_name=>'foo',labels=>{ bar => 'baz'},values=>[[1551972804,'xxx'],[1551972854,'yyy']] );
+my $m2 = OD::Prometheus::Metric->new( metric_name=>'foo',labels=>{ bar => 'baz'},value=>1234,timestamp=>1551972854 );
 
-#p $b;
+ok( $m->size == 2, 'Size method works');
+ok( $m2->size == 1, 'Size method works yet again');
+is( $m->values, [[1551972804,'xxx'],[1551972854,'yyy']],'Values were set correctly');
+is( $m2->value, 1234, 'Value also works');
+is( $b->value, 7.1, 'Value works yet again');
+is( $m2->timestamp, 1551972854, 'Timestamp works');
+ok( dies { $m->value },'calling value on metric with multiple values should die');
+ok( dies { $m->timestamp },'calling timestamp on metric with multiple values should die');
+is( $m->to_string,"# TYPE untyped\nfoo{bar=\"baz\"} xxx 1551972804\nfoo{bar=\"baz\"} yyy 1551972854", 'to_string works okay');
 
-#say STDERR $b->labels->{ quote };
-
-#say STDERR $b->to_string;
 
 my $s = OD::Prometheus::Set->new;
 

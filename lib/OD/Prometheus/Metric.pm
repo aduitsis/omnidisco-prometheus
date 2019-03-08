@@ -22,19 +22,10 @@ has metric_name	=> (
 	required=> 1,
 );
 
-has value	=> (
+has values	=> (
 	is	=> 'ro',
-	isa	=> 'Value | ArrayRef[ArrayRef]',
+	isa	=> 'ArrayRef[ArrayRef]',
 	required=> 1,
-	reader	=> '_value',
-);
-
-has timestamp	=> (
-	is	=> 'ro',
-	isa	=> 'Int',
-	required=> 1,
-	reader	=> '_timestamp',
-	default	=> sub { time },
 );
 
 has labels	=> (
@@ -64,34 +55,39 @@ sub BUILDARGS {
 	else {
 		my %temphash = @_;
 		if( @_ == 4 && exists $temphash{ line }  && exists $temphash{ comments }  ) {
-			return $class->parse( $temphash{ line } , @{ $temphash{ comments } } );	
+			%temphash = $class->parse( $temphash{ line } , @{ $temphash{ comments } } )->%*;
 		}
-		else {
-			return $class->SUPER::BUILDARGS(@_);
+		# case where value is supplied instead of values
+		if( exists $temphash{ value } ) {
+			exists( $temphash{ values } ) && die 'Please do not set value and values at the same time';
+			$temphash{ values } = [ [ $temphash{ timestamp } // time, $temphash{ value } ] ];
+			delete $temphash{ value }
 		}
+		# case where line and comments are supplied to new
+		return \%temphash
 	}
 }
 
 sub value {
-	die 'Please do not call value when object contains multiple values. Use the is_multi method to test and call values if true'
-		if $_[0]->is_multi;
-	$_[0]->_value
-};
-
-sub values {
-	die 'Please do not call values when object contains one value. Use the is_multi method to test and call value if false'
-		if ! $_[0]->is_multi;
-	$_[0]->_value
+	die 'Please do not call value when object contains multiple values. Use the is_multi method to test and call values if true' if $_[0]->is_multi;
+	$_[0]->first->[1]
 };
 
 sub timestamp {
-	die 'Please do not call timestamp when object contains multiple values. Use the is_multi method to test and, if true, get the timestamps from the values method directly'
-		if $_[0]->is_multi;
-	$_[0]->_timestamp
+	die 'Please do not call timestamp when object contains multiple values. Use the is_multi method to test and, if true, get the timestamps from the values method directly' if $_[0]->is_multi;
+	$_[0]->first->[0];
+}
+
+sub first {
+	$_[0]->values->[0]
+}
+
+sub size {
+	scalar $_[0]->values->@*
 }
 
 sub is_multi {
-	defined( reftype( $_[0]->_value ) );
+	$_[0]->size > 1
 }
 
 sub to_string {
@@ -101,7 +97,7 @@ sub to_string {
 			( ($_[0]->labels->%*)? '{'.join(',',map { $_.'='.$_[0]->get_label( $_ ) } (sort keys $_[0]->labels->%*)).'}' : '' ).' '.
 			$_->[1].' '.$_->[0]
 		}
-		sort { $a->[0] <=> $b->[0] } ( $_[0]->is_multi ? $_[0]->values->@* : [ $_[0]->timestamp, $_[0]->value ] )
+		sort { $a->[0] <=> $b->[0] } ( $_[0]->values->@* )
 	) 
 }
 
