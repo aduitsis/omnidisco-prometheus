@@ -33,7 +33,7 @@ sub push {
 }
 
 sub size {
-	sum map { $_->size } $_[0]->metrics->@*
+	sum( map { $_->size } $_[0]->metrics->@* ) // 0 # we do this to make sure we always get a number
 }
 
 sub is_empty {
