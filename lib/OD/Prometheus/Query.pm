@@ -117,7 +117,7 @@ sub get {
 					$ret->push( OD::Prometheus::Metric->new(
 						metric_name	=> $metric->{ __name__ },
 						labels		=> { map { $_ => $metric->{$_} } grep { $_ ne '__name__' } keys $metric->%* },
-						value		=> $values,
+						values		=> $values,
 					));
 				}
 			}
